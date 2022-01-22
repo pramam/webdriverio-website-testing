@@ -51,3 +51,27 @@ describe("Testing Search functionality on a specific video", ()=>{
         expect(await browser.getUrl()).toEqual("https://www.youtube.com/watch?v=umnMHQPYEmA");  
     })
 })
+
+describe("Testing that a video is not found on wrong search", ()=>{
+    it("TC_Search_2: Test if typing search terms not related to the subject brings up the subject", async()=>{
+        await browser.url("https://www.youtube.com");
+        
+        const elInput = await $('input[id="search"]')
+
+        await elInput.setValue("Harare");
+        
+        // This is just to see it visually in action
+        await browser.pause(1000);
+        await elInput.keys("\uE007");
+
+        const elFindVideo = await $('yt-formatted-string=Yuval Noah Harari on The Future of Humanity');
+
+        // Wait for the browser to load results
+        await browser.pause(5000);
+        
+        // Note: WebdriverIO will not wait for the element to exist to execute this command
+        let isExisting = await elFindVideo.isExisting();
+
+        expect(isExisting).toEqual(false);
+    })
+})
